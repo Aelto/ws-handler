@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <input type="text" id="message-input">
+  <button id="send-message">send</button>
+
+  <div id="messages">
+
+  </div>
+  
+  <script src="/ws-client-global.js"></script>
+  <script>
+    const client = new WsClient()
+
+    client
+    .on('new-message-done', ({ message }) => addMessage(message.text))
+    .open()
+
+    const $messageInput = document.querySelector('#message-input')
+    document.querySelector('#send-message')
+      .addEventListener('click', e => client.send('new-message', { text: $messageInput.value }))
+
+    const messageParent = document.querySelector('div#messages')
+    function addMessage(text) {
+      const elem = document.createElement('div')
+      elem.innerText = text
+      messageParent.appendChild(elem)
+    }
+  </script>
+</body>
+</html>
