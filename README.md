@@ -114,3 +114,57 @@ serverWs.on('new-message', (ws, { message }) =>
 
 // ...
 ```
+
+## API
+
+### constructor()
+Instantiate a new `WsServer`
+
+```js
+const serverWs = new WsServer()
+```
+
+### on(`title: string, fn: (Websocket, { message: { [string]: any } })`)
+Set an event listener that will be called everytime an incoming object has the same `title` as the supplied one.
+
+```js
+serverWs.on('add-user', (wsClient, { message }) => {
+  // ...
+})
+```
+
+### emit(`name: string, obj: { message: { [key]: any } }, ws: Websocket`)
+This is an internal method that is _public_ as it can be useful when someone wants to manually trigger events. `title` is the event's name and `obj` is the data passed to the event function.
+
+```js
+serverWs.emit('add-user', { message: { username: 'user_1' } }, userWebsocket)
+```
+
+### send(`wsClient: Websocket, title: string, message: { [string]: any }, thenableId = undefined: number | undefined, state = 200: number`)
+Send a message with the current websocket connection where `title` is the event name to trigger on the client side, `message` is the data sent to the client
+
+
+### answer(`wsClient: Websocket, req: { message: { [string]: any } }, message: { [string]: any }, state = 200: number`)
+give back an answer to the client, it uses the same `title` as the incoming request with `-done` appended to it.
+
+```js
+serverWs.on('add-user', (wsClient, { message }) => {
+  
+  serverWs.answer(wsClient, req, { information: 'created 1 new user' })
+})
+```
+
+### broadcast(`title: string, message: { [string]: any }`)
+It has the same behavior as the `send` method but targets every user connected to the server
+
+```js
+serverWs.broadcast('chat-message', { text: 'broadcast to all users' })
+```
+
+### accept(`app: Express, path: string`): WsClient
+Open the websocket connection using the given `path`, then return the current instance of `WsClient` so this method is chainable.
+
+```js
+const serverWs = new WsServer()
+  .accept(app, '/ws')
+```
