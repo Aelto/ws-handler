@@ -74,7 +74,7 @@ module.exports = class WsManager {
   constructor() {
     this.events = {}
 
-    this.clients = new ClientMap
+    this.clients = new ClientMap()
   }
 
   /**
