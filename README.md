@@ -148,7 +148,8 @@ Send a message with the current websocket connection where `title` is the event 
 give back an answer to the client, it uses the same `title` as the incoming request with `-done` appended to it.
 
 ```js
-serverWs.on('add-user', (wsClient, { message }) => {
+serverWs.on('add-user', (wsClient, req) => {
+  const { message } = req
   
   serverWs.answer(wsClient, req, { information: 'created 1 new user' })
 })
